@@ -29,6 +29,8 @@ public:
   */
   MatrixXd CalculateJacobian(const VectorXd& x_state);
 
+  int test_fcts();  //a test function that simply returns -1
+
 };
 
 #endif /* TOOLS_H_ */

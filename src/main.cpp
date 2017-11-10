@@ -29,10 +29,10 @@ std::string hasData(std::string s) {
 int main()
 {
   uWS::Hub h;
-
+ 
   // Create a Kalman Filter instance
   FusionEKF fusionEKF;
-
+  
   // used to compute the RMSE later
   Tools tools;
   vector<VectorXd> estimations;
