@@ -63,9 +63,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd h_of_x(3);
   //measurement error
   VectorXd y(3);
-  //normalized measurement
-  VectorXd z_norm = z;
-
+  
   if (px < EPSILON)
   {
     cout << "Px close to zero\n";
@@ -83,8 +81,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     h_of_x << rho,
               atan2(py, px),
               rho_dot;
-    //z_norm(1) = atan2(sin(z(1)), cos(z(1)));
-    y = z_norm - h_of_x;  
+    
+    y = z - h_of_x;  
     //normalize the angle element of y
     y(1) = atan2(sin(y(1)), cos(y(1)));
 

@@ -98,8 +98,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
       //Compute position in cartesian coordinates from polar
       float rho = measurement_pack.raw_measurements_[0];
-      //normalize angle to [-pi, pi]
-      //float phi = atan2(sin(measurement_pack.raw_measurements_[1]), cos(measurement_pack.raw_measurements_[1]));  
       float phi = measurement_pack.raw_measurements_[1];
       ekf_.x_(0) = rho * cos(phi);
       ekf_.x_(1) = rho * sin(phi);
