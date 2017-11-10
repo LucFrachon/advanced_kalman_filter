@@ -86,7 +86,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     //normalize the angle element of y
     y(1) = atan2(sin(y(1)), cos(y(1)));
 
-    cout << "Measured angle: " << z_norm(1) << endl;
+    cout << "Measured angle: " << z(1) << endl;
     cout << "Computed angle: " << h_of_x(1) << endl;
     cout << "Error: " << y(1) << endl;
 
