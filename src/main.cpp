@@ -29,7 +29,8 @@ std::string hasData(std::string s) {
 int main()
 {
   uWS::Hub h;
- 
+  cout << std::scientific;
+  
   // Create a Kalman Filter instance
   FusionEKF fusionEKF;
   
@@ -90,7 +91,7 @@ int main()
           		iss >> timestamp;
           		meas_package.timestamp_ = timestamp;
           }
-          float x_gt;
+        float x_gt;
     	  float y_gt;
     	  float vx_gt;
     	  float vy_gt;

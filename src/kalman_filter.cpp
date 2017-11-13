@@ -27,6 +27,10 @@ void KalmanFilter::Predict() {
 
   x_ = F_ * x_;  //state prediction
   P_ = F_ * P_ * F_.transpose() + Q_;  //covariance matrix update
+
+  cout << "F = " << F_ << endl;
+  cout << "x' = " << x_ << endl;
+  cout << "P = " << P_ << endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -39,11 +43,24 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd Si = S.inverse();
   MatrixXd K = PHt * Si;
 
+  cout << "y = " << y << endl;
+  cout << "H = " << H_ << endl;
+  cout << "Ht = " << Ht << endl;
+  cout << "PHt = " << PHt << endl;
+  cout << "S = " << S << endl;
+  cout << "Si = " << Si << endl;
+  cout << "K = " << K << endl;
+
   //new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
+
+  cout << "New x = " << x_ << endl;
+  cout << "x_size = " << x_size << endl;
+  cout << "I = " << I << endl;
+  cout << "P = " << P_ << endl;
 
 }
 
@@ -59,38 +76,50 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float vx = x_(2);
   float vy = x_(3);
   float rho = sqrt(px * px + py * py);
+  float rho_dot;
+
+  cout << "px= " << px << endl;
+  cout << "py = " << py << endl;
+  cout << "vx = " << vx << endl;
+  cout << "vy = " << vy << endl;
+  cout << "rho = " << rho << endl;
+
   //measurement function
   VectorXd h_of_x(3);
+
   //measurement error
   VectorXd y(3);
   
-  if (px < EPSILON)
+  if (fabs(px) < EPSILON)
   {
     cout << "Px close to zero\n";
-    float px = EPSILON;
+    px = EPSILON;
   }
 
   if (rho < EPSILON) 
-  { //if division by zero, keep the previous value for y
+  { //if division by zero
     cout << "Division by zero in UpdateEFK()\n";
-    float rho = EPSILON;
-    //float rho_dot = 0;
+    rho = EPSILON;
+    rho_dot = 0;
+
   } else
-  { //otherwise calculate y = measurement error
-    float rho_dot = (px * vx + py * vy) / rho;
-    h_of_x << rho,
-              atan2(py, px),
-              rho_dot;
-    
-    y = z - h_of_x;  
-    //normalize the angle element of y
-    y(1) = atan2(sin(y(1)), cos(y(1)));
-
-    cout << "Measured angle: " << z(1) << endl;
-    cout << "Computed angle: " << h_of_x(1) << endl;
-    cout << "Error: " << y(1) << endl;
-
+  { 
+    rho_dot = (px * vx + py * vy) / rho;
   }
+
+  h_of_x << rho,
+            atan2(py, px),
+            rho_dot;
+  
+  y = z - h_of_x;  
+  
+  cout << "h(x') = " << h_of_x << endl;
+  cout << "y = z - h(x') = " << y << endl;
+
+  //normalize the angle element of y
+  y(1) = atan2(sin(y(1)), cos(y(1)));
+
+  cout << "After normalization, y = " << y << endl;
   
   MatrixXd Hjt = H_.transpose();
   MatrixXd PHjt = P_ * Hjt;
@@ -98,9 +127,20 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd Si = S.inverse();
   MatrixXd K = PHjt * Si;
 
+  cout << "Hjt=" << Hjt << endl;
+  cout << "PHjt= " << PHjt << endl;
+  cout << "S = " << S << endl;
+  cout << "Si = " << Si << endl;
+  cout << "K = " << K << endl;
+
   //new estimate
   x_ = x_ + K * y;
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
+
+  cout << "New x = " << x_ << endl;
+  cout << "x_size = " << x_size << endl;
+  cout << "I = " << I << endl;
+  cout << "P = " << P_ << endl; 
 }
