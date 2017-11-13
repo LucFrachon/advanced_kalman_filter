@@ -1,12 +1,17 @@
+#include "kalman_filter.h"
+#include <iostream>
 
+using namespace std;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using std::vector;
+
+const float EPSILON = 0.0001;
 
 void KalmanFilter::Predict() {
 
   x_ = F_ * x_;  //state prediction
   P_ = F_ * P_ * F_.transpose() + Q_;  //covariance matrix update
-
-
-
 
 }
 
@@ -20,25 +25,11 @@ void KalmanFilter::Update(const VectorXd &z) {
   MatrixXd Si = S.inverse();
   MatrixXd K = PHt * Si;
 
-
-
-
-
-
-
-
-
   //new estimate
   x_ = x_ + (K * y);
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
-
-
-
-
-
-
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -55,12 +46,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float rho = sqrt(px * px + py * py);
   float rho_dot;
 
-
-
-
-
-
-
   //measurement function
   VectorXd h_of_x(3);
 
@@ -76,30 +61,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   if (rho < EPSILON) 
   { //if division by zero
     cout << "Division by zero in UpdateEFK()\n";
-
     rho = EPSILON;
     rho_dot = 0;
-=======
-    float rho = EPSILON;
-    //float rho_dot = 0;
   } else
   { //otherwise calculate y = measurement error
-    float rho_dot = (px * vx + py * vy) / rho;
-    h_of_x << rho,
-              atan2(py, px),
-              rho_dot;
-    
-    y = z - h_of_x;  
-    //normalize the angle element of y
-    y(1) = atan2(sin(y(1)), cos(y(1)));
-
-    cout << "Measured angle: " << z(1) << endl;
-    cout << "Computed angle: " << h_of_x(1) << endl;
-    cout << "Error: " << y(1) << endl;
->>>>>>> 335657e2b35d41ec64622a3f85ec373aec5d9ede
-
-  } else
-  { 
+    rho = sqrt(px * px + py * py);
     rho_dot = (px * vx + py * vy) / rho;
   }
 
@@ -108,14 +74,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
             rho_dot;
   
   y = z - h_of_x;  
- 
-
-
-
   //normalize the angle element of y
   y(1) = atan2(sin(y(1)), cos(y(1)));
-
-
   
   MatrixXd Hjt = H_.transpose();
   MatrixXd PHjt = P_ * Hjt;
@@ -123,22 +83,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   MatrixXd Si = S.inverse();
   MatrixXd K = PHjt * Si;
 
-
-
-
-
-
-
   //new estimate
   x_ = x_ + K * y;
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
-
-
-
-
-
-
 
 }
