@@ -5,10 +5,10 @@ This is Term 2 / Project 1 of the Self-Driving Car Nanodegree by Udacity.
 
 ## Directories and files
 
-* `src ` contains the code (in C++)
+* `src ` contains the code (in C++).
     - `main.cpp`: main code that connects to the simulator, reads inputs from `../data/obj_pose-laser-radar-synthetic-input.txt`, 
     executes `ProcessMeasurement()` (see below) and calculates and ouputs the root mean squared errors (RMSE) of estimates 
-    (calculated by the Kalman Filter) vs ground truth (provided in the data file)
+    (calculated by the Kalman Filter) vs ground truth (provided in the data file). This code was entirely provided by Udacity.
     - `FusionEKF.cpp` / `FusionEKF.h`: define a Fusion Extended Kalman Filter class with the `ProcessMeasurement()` method, which 
     initilizes an instance of the `kalman_filter` class and calls the `Predict()` and `Update()` / `UpdateEKF()` methods.
     - `kalman_filter.cpp` / `kalman_filter.h`:  define the KalmaFilter class used in `FusionEKF::ProcessMeasurement()`. Its public
